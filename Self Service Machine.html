@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <title>Self Service Order</title>
+</head>
+
+<body>
+
+<main id="app">
+
+  <section class="items">
+    <h4>Pick your items</h4>
+    <div v-for="product in products"
+         class="product"
+         @click="toggleActive(product)"
+         :class="{selected: product.active}"
+    >
+
+      <div class="photo">
+        <img :src="product.photo">
+      </div>
+      <div class="description">
+        <span class="name">{{product.name}}</span>
+        <span class="price">{{product.price}} PHP</span>
+        <div class="quantity-area">
+          <template v-if="product.active">
+            <button :disabled="product.quantity<=1" @click.stop="product.quantity--">-</button>
+            <span class="quantity">{{product.quantity}}</span>
+            <button @click.stop="product.quantity++">+</button>
+          </template>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <section class="summary" v-if="total()>0">
+    <strong>Order Details</strong>
+    <table>
+      <thead>
+      <tr>
+        <th>Item</th>
+        <th>Total</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr v-for="product in products">
+        <template v-if="product.active">
+          <td>{{product.quantity + 'x ' + product.name}}</td>
+          <td>{{(product.quantity * product.price).toFixed(2)}}</td>
+        </template>
+      </tr>
+
+      <tr>
+        <th>Total</th>
+        <th>{{total()}} PHP</th>
+      </tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="footer">
+    <div class="copyright-text">
+      &copy; 2023 Andrea Veloro, Mendel.
+    </div>
+  </section>
+
+</main>
+
+<script src="https://unpkg.com/vue@next"></script>
+<script>
+  var products = [
+    {
+      "photo": "img/big-mac.png",
+      "name": "Big Mac",
+      "price": 5.99,
+      "active": false,
+      "quantity": 1
+    },
+    {
+      "photo": "img/mc-chicken.png",
+      "name": "Mc Chicken",
+      "price": 4.99,
+      "active": false,
+      "quantity": 1
+    },
+    {
+      "photo": "img/double-cb.png",
+      "name": "Double Cheese Burger",
+      "price": 2.99,
+      "active": false,
+      "quantity": 1
+    },
+    {
+      "photo": "img/fries.png",
+      "name": "Fries",
+      "price": 2.99,
+      "active": false,
+      "quantity": 1
+    },
+    {
+      "photo": "img/nuggets.png",
+      "name": "Mc Nuggets",
+      "price": 3.49,
+      "active": false,
+      "quantity": 1
+    },
+    {
+      "photo": "img/salad.png",
+      "name": "Salad",
+      "price": 2.79,
+      "active": false,
+      "quantity": 1
+    },
+    {
+      "photo": "img/cola.png",
+      "name": "Coke",
+      "price": 1.99,
+      "active": false,
+      "quantity": 1
+    },
+    {
+      "photo": "img/lipton.png",
+      "name": "Ice Tea",
+      "price": 1.99,
+      "active": false,
+      "quantity": 1
+    },
+    {
+      "photo": "img/water.png",
+      "name": "Water",
+      "price": 1.49,
+      "active": false,
+      "quantity": 1
+    }
+  ];
+
+  const SelfServiceMachine = {
+    data() {
+      return {
+        products: window.products,
+        orderTotal: 0
+      }
+    },
+    methods: {
+      toggleActive: function(item){
+        item.active = !item.active;
+      },
+      total: function(){
+        var total = 0;
+        this.products.forEach(function(item){
+          if (item.active){
+            total+= item.price * item.quantity;
+          }
+        });
+        return total.toFixed(2);
+      }
+    }
+  };
+
+  Vue.createApp(SelfServiceMachine).mount('#app');
+
+</script>
+</body>
+
+</html>
